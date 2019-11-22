@@ -28,10 +28,15 @@ int main(int argc, char **argv)
 
 	robot.setVel2(100, 100);
 
-	double err_p, err_prev = 0.0, err_i = 0.0, err_d, tar = 500.0;
-	double kp = 0.732;
-	double ki = 0;
-	double kd = 0.1525;
+	double err_p, err_prev = 0.0, err_i = 0.0, err_d, tar = 450.0;
+	//double kp = 0.732;
+	//double ki = 0;
+	//double kd = 0.1525;
+	//
+
+	double kp = 0.4;
+	double ki = 0.00008;
+	double kd = 0.1;
 
 	int count = 0;
 	
@@ -53,10 +58,30 @@ int main(int argc, char **argv)
 			sonarRange[i] = sonarSensor[i]->getRange();
 		}
 
+		int min4 = sonarRange[4];
+		int min5 = sonarRange[5];
 		int min6 = sonarRange[6];
 		int min7 = sonarRange[7];
+
+		for (int i = 0; i<10; i++)
+		{
+			int val4 = robot.getSonarReading(4)->getRange();
+			if (min4 > val4)
+			{
+				min4 = val4;
+			}
+		}
+
+		for (int i = 0; i<10; i++)
+		{
+			int val5 = robot.getSonarReading(5)->getRange();
+			if (min5 > val5)
+			{
+				min5 = val5;
+			}
+		}
 		
-		for( int i = 0; i<15; i++)
+		for( int i = 0; i<10; i++)
 		{
 			int val6 = robot.getSonarReading(6)->getRange();
 			if(min6 > val6)
@@ -70,7 +95,7 @@ int main(int argc, char **argv)
 			min6 = 1000;
 		}
 
-		for (int i = 0; i<15; i++)
+		for (int i = 0; i<10; i++)
 		{
 			int val7 = robot.getSonarReading(7)->getRange();
 			if (min7 > val7)
@@ -88,7 +113,7 @@ int main(int argc, char **argv)
 
 		if(min7<5000 && x_dist<5000)
 		{
-			distance = (min7 + x_dist) / 2;
+			distance = min(min7, x_dist);
 		}
 		if (abs(sonarRange[7] - x_dist) >= 1500)
 		{
@@ -102,6 +127,9 @@ int main(int argc, char **argv)
 		{
 			distance = x_dist;
 		}
+
+		double min45 = min(min4, min5);
+		distance = min(distance, min45);
 
 		if(min7>=5000 && x_dist>=5000)
 		{
