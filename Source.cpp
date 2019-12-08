@@ -34,11 +34,19 @@ int main(int argc, char **argv)
 	//double kd = 0.1525;
 	//
 
-	double kp = 0.4;
+	//double kp = 0.4;
+	//double ki = 0.00008;
+	//double kd = 0.1;
+	//
+	//
+
+	double kp = 0.35;
 	double ki = 0.00008;
-	double kd = 0.1;
+	double kd = 0.22;
 
 	int count = 0;
+
+	int past_count = 0;
 	
 	while (true)
 	{
@@ -141,9 +149,19 @@ int main(int argc, char **argv)
 		else
 		{
 			err_p = tar - distance;
-			err_i += err_p;
+			if(past_count <10)
+			{
+				err_i += err_p;
+			}
+			else
+			{
+				err_i = err_p;
+				past_count = 0;
+			}
+			
 			err_d = err_p - err_prev;
 			err_prev = err_p;
+			past_count++;
 		}
 
 		if(count==10)
@@ -164,7 +182,7 @@ int main(int argc, char **argv)
 		robot.setVel2(base - output, base);
 		
 
-		ArUtil::sleep(100);
+		ArUtil::sleep(150);
 
 	}
 
